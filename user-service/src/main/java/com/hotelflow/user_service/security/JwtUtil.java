@@ -25,11 +25,12 @@ public class JwtUtil {
     @Value("${jwt.refresh-token-expiration}")
     private long refreshTokenExpiration;
 
-    public String generateAcessToken(String userName){
+    public String generateAccessToken(String userName, String role) {
         return Jwts.builder()
-                .setSubject(userName) 
+                .setSubject(userName)
+                .claim("role", role) // 👈 add this
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis()+accessTokenExpiration))
+                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

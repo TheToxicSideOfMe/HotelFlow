@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -45,11 +47,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 // No DB call — just verify the signature and build auth from token claims
                 if (jwtUtil.isTokenValid(jwt)) {
+                    String role = jwtUtil.extractRole(jwt); // extract role claim
+                    List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+                
                     UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
-                            username,  // principal is just the username string
+                            username,
                             null,
-                            List.of()  // we'll handle roles separately if needed
+                            authorities  // pass authorities here
                         );
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
