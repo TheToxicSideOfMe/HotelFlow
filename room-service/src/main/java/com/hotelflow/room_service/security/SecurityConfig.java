@@ -1,4 +1,4 @@
-package com.hotelflow.ride_service.security;
+package com.hotelflow.room_service.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

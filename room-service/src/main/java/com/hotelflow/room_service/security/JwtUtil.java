@@ -1,4 +1,4 @@
-package com.hotelflow.ride_service.security;
+package com.hotelflow.room_service.security;
 
 import java.nio.charset.StandardCharsets;
 
