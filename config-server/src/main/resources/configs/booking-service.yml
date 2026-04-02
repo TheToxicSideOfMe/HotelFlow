@@ -1,0 +1,29 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: booking-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/booking_service_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+jwt:
+  secret: g7DoV5efMmZVdb23nYIYxPPHp1yngV6xGOdCeIN2AymRideshare2026SecureKeyForAllServices
+  access-token-expiration: 900000   # 15 minutes
+  refresh-token-expiration: 604800000  # 7 days
+
+room-service:
+  url: http://localhost:8082
