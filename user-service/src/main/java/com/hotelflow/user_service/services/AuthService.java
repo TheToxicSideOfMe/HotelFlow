@@ -85,7 +85,7 @@ public class AuthService {
         //load user
         User user = userRepository.findByUsername(request.getUsername())
                         .orElseThrow(()-> new InvalidCredentialsException("User Not Found"));
-        String accessToken = jwtUtil.generateAccessToken(request.getUsername(),user.getRole().name());
+        String accessToken = jwtUtil.generateAccessToken(request.getUsername(),user.getRole().name(),user.getId());
         String refreshToken = jwtUtil.generateRefreshToken(request.getUsername());
 
         refreshTokenService.saveRefreshToken(user, refreshToken);
@@ -124,7 +124,7 @@ public class AuthService {
         
 
         //generate new access and refresh tokens
-        String accessToken = jwtUtil.generateAccessToken(username, user.getRole().name());;
+        String accessToken = jwtUtil.generateAccessToken(username, user.getRole().name(),user.getId());;
         String refreshToken=jwtUtil.generateRefreshToken(username);
         refreshTokenService.saveRefreshToken(user, refreshToken);
 

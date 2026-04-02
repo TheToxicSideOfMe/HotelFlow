@@ -19,14 +19,15 @@ public class RoomClient {
 
     // ─── Room Service Communication ───────────────────────────────────────────
 
-    public RoomDetailsDTO getRoomDetails(String roomId) {
-        try {
-            return restTemplate.getForObject(
-                roomServiceUrl + "/api/rooms/" + roomId + "/details",
-                RoomDetailsDTO.class
-            );
-        } catch (Exception e) {
-            throw new RuntimeException("Room not found or Room Service unavailable");
-        }
+public RoomDetailsDTO getRoomDetails(String roomId) {
+    try {
+        return restTemplate.getForObject(
+            roomServiceUrl + "/api/rooms/" + roomId + "/details",
+            RoomDetailsDTO.class
+        );
+    } catch (Exception e) {
+        e.printStackTrace(); // add this
+        throw new RuntimeException("Room not found or Room Service unavailable: " + e.getMessage()); // and this
     }
+}
 }
