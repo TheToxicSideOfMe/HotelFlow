@@ -1,0 +1,51 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: ${USER_SERVICE_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/auth/**, /api/users/**
+
+        - id: room-service
+          uri: ${RIDE_SERVICE_URL:http://localhost:8082}
+          predicates:
+            - Path=/api/rides/**
+
+        - id: booking-service
+          uri: ${TRACKING_SERVICE_URL:http://localhost:8083}
+          predicates:
+            - Path=/api/tracking/**
+
+        - id: ai-agent-service
+          uri: ${NOTIFICATION_SERVICE_URL:http://localhost:8084}
+          predicates:
+            - Path=/api/notifications/**
+
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:3000"
+              - "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
+  main:
+    web-application-type: reactive
