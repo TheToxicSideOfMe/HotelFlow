@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hotelflow.room_service.dtos.RoomDetailsDTO;
 import com.hotelflow.room_service.models.Room;
 import com.hotelflow.room_service.models.Room.RoomStatus;
 import com.hotelflow.room_service.services.RoomService;
@@ -77,6 +78,17 @@ public class RoomController {
             @RequestParam RoomStatus status
     ) {
         return ResponseEntity.ok(roomService.updateStatus(id, status));
+    }
+
+    @GetMapping("/{id}/details")
+    public ResponseEntity<RoomDetailsDTO> getRoomDetails(@PathVariable String id) {
+        Room room = roomService.getById(id);
+        return ResponseEntity.ok(new RoomDetailsDTO(
+            room.getId(),
+            room.getRoomNumber(),
+            room.getStatus(),
+            room.getRoomType().getPricePerNight()
+        ));
     }
 
     // ✅ Update room

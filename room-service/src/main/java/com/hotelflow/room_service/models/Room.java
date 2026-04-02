@@ -40,9 +40,9 @@ public class Room {
 
     
     public enum RoomStatus {
-    AVAILABLE,
-    OCCUPIED,
-    MAINTENANCE,
-    OUT_OF_SERVICE
-}
+        AVAILABLE,
+        OCCUPIED,
+        MAINTENANCE,
+        OUT_OF_SERVICE
+    }
 }
