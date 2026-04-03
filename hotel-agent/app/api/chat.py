@@ -2,11 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from langchain_core.messages import HumanMessage, AIMessage
-from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from app.database import get_db
 from app.models.conversation import Conversation
-from app.services.rag_service import search_knowledge_base
-from langchain_openai import ChatOpenAI
+from app.agent.graph import build_graph
 import json
 import os
 
@@ -38,18 +37,9 @@ def deserialize_messages(raw: str) -> list:
             messages.append(AIMessage(content=m["content"]))
     return messages
 
-
-
-llm = ChatOpenAI(
-    model="deepseek-chat",
-    api_key=os.getenv("DEEPSEEK_API_KEY"),
-    base_url="https://api.deepseek.com"
-)
-
 @router.post("/chat", response_model=ChatResponse)
-def chat(request: ChatRequest, db: Session = Depends(get_db)):
+async def chat(request: ChatRequest, db: Session = Depends(get_db)):
 
-    # 1. Load or create conversation
     conversation = db.query(Conversation).filter(
         Conversation.session_id == request.session_id
     ).first()
@@ -60,37 +50,23 @@ def chat(request: ChatRequest, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(conversation)
 
-    # 2. Load history
     history = deserialize_messages(conversation.messages)
-
-    # 3. RAG — retrieve relevant context
-    context = search_knowledge_base(request.message, db)
-
-    # 4. Build prompt with context injected
-    system_prompt = f"""You are a friendly and professional hotel receptionist at the Azure Grand Hotel in Tunis.
-    Greet guests warmly, respond naturally to small talk, and answer hotel-related questions using the information below.
-    Only say you don't have information if the guest asks something specific about the hotel that isn't covered.
-    
-    Hotel Knowledge:
-    {context}"""
-
-    messages = [
-        ("system", system_prompt),
-        *[(("human" if isinstance(m, HumanMessage) else "ai"), m.content) for m in history],
-        ("human", request.message)
-    ]
-
-    # 5. Call LLM
-    try:
-        response = llm.invoke(messages)
-        ai_response = response.content
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"LLM error: {str(e)}")
-
-    # 6. Save history
     history.append(HumanMessage(content=request.message))
-    history.append(AIMessage(content=ai_response))
-    conversation.messages = serialize_messages(history)
+
+    try:
+        graph = build_graph(db)
+        result = await graph.ainvoke({"messages": history})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Agent error: {str(e)}")
+
+    final_messages = result["messages"]
+    ai_response = next(
+        (m.content for m in reversed(final_messages) if isinstance(m, AIMessage)),
+        "Sorry, I couldn't generate a response."
+    )
+
+    clean_history = [m for m in final_messages if isinstance(m, (HumanMessage, AIMessage))]
+    conversation.messages = serialize_messages(clean_history)
     db.commit()
 
     return ChatResponse(session_id=request.session_id, response=ai_response)

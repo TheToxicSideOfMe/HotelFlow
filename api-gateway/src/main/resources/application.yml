@@ -13,19 +13,15 @@ spring:
             - Path=/api/auth/**, /api/users/**
 
         - id: room-service
-          uri: ${RIDE_SERVICE_URL:http://localhost:8082}
+          uri: ${ROOM_SERVICE_URL:http://localhost:8082}
           predicates:
-            - Path=/api/rides/**
+            - Path=/api/rooms/**,/api/room-types/**
 
         - id: booking-service
-          uri: ${TRACKING_SERVICE_URL:http://localhost:8083}
+          uri: ${BOOKING_SERVICE_URL:http://localhost:8083}
           predicates:
-            - Path=/api/tracking/**
+            - Path=/api/bookings/**
 
-        - id: ai-agent-service
-          uri: ${NOTIFICATION_SERVICE_URL:http://localhost:8084}
-          predicates:
-            - Path=/api/notifications/**
 
       globalcors:
         corsConfigurations:
