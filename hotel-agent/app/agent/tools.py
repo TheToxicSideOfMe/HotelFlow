@@ -1,5 +1,5 @@
 import httpx
-import os
+import os, re
 from datetime import date
 from langchain_core.tools import tool
 from app.agent.auth import get_valid_token
@@ -42,14 +42,14 @@ async def search_available_rooms() -> str:
             rooms = response.json()
             if not rooms:
                 return "No available rooms at the moment."
-            
-            # Format explicitly so the agent can't confuse room number with room ID
+
             lines = []
             for r in rooms:
                 lines.append(
-                    f"Room ID (use this for booking): {r['id']} | "
+                    f"ROOM_ID={r['id']} | "
                     f"Room Number: {r['roomNumber']} | "
                     f"Type: {r.get('roomType', {}).get('name', 'N/A')} | "
+                    f"ROOM_TYPE_ID={r.get('roomType', {}).get('id', 'N/A')} | "
                     f"Price: {r.get('roomType', {}).get('pricePerNight', 'N/A')} TND/night | "
                     f"Capacity: {r.get('roomType', {}).get('capacity', 'N/A')} guests"
                 )
@@ -72,12 +72,16 @@ async def get_room_type_details(room_type_id: str) -> str:
     except Exception as e:
         return f"Could not fetch room type details: {str(e)}"
 
+
 @tool
-async def check_room_availability(
-    room_id: str,
-    check_in: str,
-    check_out: str
-) -> str:
+async def check_room_availability(room_id: str, check_in: str, check_out: str) -> str:
+    """Check if a room is available for specific dates before booking. Dates must be YYYY-MM-DD format."""
+    if not is_valid_uuid(room_id):
+        return (
+            f"ERROR: '{room_id}' is not a valid room ID. "
+            f"You must call search_available_rooms first to get the real Room ID (a UUID). "
+            f"Never use room numbers or constructed strings as IDs."
+        )
     """Check if a room is available for specific dates before booking. Dates must be YYYY-MM-DD format."""
     try:
         async with httpx.AsyncClient() as client:
@@ -154,21 +158,33 @@ async def get_customer_by_username(username: str) -> str:
             )
             response.raise_for_status()
             data = response.json()
-            return f"Customer found. ID: {data['id']}, name: {data['name']} {data['lastName']}, email: {data['email']}."
+            return (
+                f"Customer found. "
+                f"Customer ID (use this exact value for create_booking): {data['id']} | "
+                f"Name: {data['name']} {data['lastName']} | "
+                f"Email: {data['email']}"
+            )
     except Exception as e:
         return f"Could not find customer: {str(e)}"
 
 
 # ── 4. Bookings ───────────────────────────────────────────────────────────────
 
+
 @tool
-async def create_booking(
-    room_id: str,
-    customer_id: str,
-    check_in: str,
-    check_out: str,
-    notes: str = ""
-) -> str:
+async def create_booking(room_id: str, customer_id: str, check_in: str, check_out: str, notes: str = "") -> str:
+    """Create a booking for a customer. Dates must be in YYYY-MM-DD format."""
+    if not is_valid_uuid(room_id):
+        return (
+            f"BOOKING FAILED. '{room_id}' is not a valid room ID. "
+            f"Call search_available_rooms to get the real Room ID before booking."
+        )
+    if not is_valid_uuid(customer_id):
+        return (
+            f"BOOKING FAILED. '{customer_id}' is not a valid customer ID. "
+            f"Call get_customer_by_username or create_customer_account to get the real Customer ID."
+        )
+    # ... rest of the function unchanged
     """Create a booking for a customer. Dates must be in YYYY-MM-DD format."""
     try:
         async with httpx.AsyncClient() as client:
@@ -300,3 +316,11 @@ async def update_booking_status(booking_id: str, status: str) -> str:
             return f"Booking {booking_id} status updated to {status.upper()}."
     except Exception as e:
         return f"Could not update booking status: {str(e)}"
+    
+
+
+def is_valid_uuid(value: str) -> bool:
+    return bool(re.match(
+        r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+        value.strip().lower()
+    ))

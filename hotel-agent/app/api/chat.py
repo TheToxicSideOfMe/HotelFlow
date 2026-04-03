@@ -60,8 +60,18 @@ async def chat(request: ChatRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Agent error: {str(e)}")
 
     final_messages = result["messages"]
+    def extract_text(content) -> str:
+        if isinstance(content, str):
+            return content
+        if isinstance(content, list):
+            return " ".join(
+                block["text"] for block in content
+                if isinstance(block, dict) and block.get("type") == "text"
+            )
+        return "Sorry, I couldn't generate a response."
+    
     ai_response = next(
-        (m.content for m in reversed(final_messages) if isinstance(m, AIMessage)),
+        (extract_text(m.content) for m in reversed(final_messages) if isinstance(m, AIMessage) and m.content),
         "Sorry, I couldn't generate a response."
     )
 
