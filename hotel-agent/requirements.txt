@@ -10,3 +10,5 @@ langchain-ollama
 langchain-community
 langgraph
 python-telegram-bot
+langchain_openai
+openai
