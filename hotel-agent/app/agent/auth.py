@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-GATEWAY_URL = os.getenv("GATEWAY_URL", "http://localhost:8222")
+GATEWAY_URL = os.getenv("GATEWAY_URL", "http://localhost:8080")
 AGENT_USERNAME = os.getenv("AGENT_USERNAME")
 AGENT_PASSWORD = os.getenv("AGENT_PASSWORD")
 
