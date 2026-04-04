@@ -1,5 +1,6 @@
 package com.hotelflow.booking_service.controllers;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hotelflow.booking_service.dtos.AgentBookingRequest;
 import com.hotelflow.booking_service.dtos.CreateBookingRequest;
+import com.hotelflow.booking_service.dtos.RoomDetailsDTO;
 import com.hotelflow.booking_service.models.Booking;
 import com.hotelflow.booking_service.models.Booking.BookingStatus;
 import com.hotelflow.booking_service.services.BookingService;
@@ -74,6 +77,17 @@ public class BookingController {
 
         return ResponseEntity.ok(booking);
     }
+    
+    @GetMapping("/available-rooms")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST', 'ADMIN', 'CUSTOMER')")
+    public ResponseEntity<List<RoomDetailsDTO>> getAvailableRooms(
+            @RequestParam String roomTypeName,
+            @RequestParam LocalDate checkIn,
+            @RequestParam LocalDate checkOut) {
+        return ResponseEntity.ok(bookingService.findAvailableRoomsByName(roomTypeName, checkIn, checkOut));
+    }
+    
+
 
     @GetMapping
     @PreAuthorize("hasAnyRole('RECEPTIONIST', 'ADMIN')")
@@ -147,6 +161,22 @@ public class BookingController {
         bookingService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+
+
+    @PostMapping("/agent")
+@PreAuthorize("hasAnyRole('RECEPTIONIST', 'ADMIN')")
+public ResponseEntity<Booking> createBookingByAgent(
+        @RequestBody AgentBookingRequest request) {
+    Booking booking = bookingService.createBookingByRoomTypeName(
+        request.getCustomerId(),
+        request.getRoomTypeName(),
+        request.getCheckIn(),
+        request.getCheckOut(),
+        request.getNotes()
+    );
+    return ResponseEntity.status(HttpStatus.CREATED).body(booking);
+}
 
     // ─── Helper ───────────────────────────────────────────────────────────────
 

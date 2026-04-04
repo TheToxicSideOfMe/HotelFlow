@@ -32,4 +32,15 @@ public interface BookingRepository extends JpaRepository<Booking,String> {
         LocalDate checkIn,
         LocalDate checkOut
     );
+    
+    @Query("""
+        SELECT b.roomId FROM Booking b
+        WHERE b.status NOT IN ('CANCELLED', 'CHECKED_OUT')
+        AND b.checkIn < :checkOut
+        AND b.checkOut > :checkIn
+    """)
+    List<String> findBookedRoomIds(
+        @Param("checkIn") LocalDate checkIn,
+        @Param("checkOut") LocalDate checkOut
+    );
 }

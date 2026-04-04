@@ -1,6 +1,7 @@
 package com.hotelflow.room_service.controllers;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hotelflow.room_service.dtos.RoomDetailsDTO;
 import com.hotelflow.room_service.models.Room;
 import com.hotelflow.room_service.models.Room.RoomStatus;
+import com.hotelflow.room_service.repositories.RoomRepository;
 import com.hotelflow.room_service.services.RoomService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class RoomController {
 
     private final RoomService roomService;
+    private final RoomRepository roomRepository;
 
     // ✅ Create room
     @PostMapping
@@ -40,6 +43,16 @@ public class RoomController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(roomService.create(room, roomTypeId));
+    }
+    @PostMapping("/bulk")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Room>> createRooms(
+            @RequestBody List<Room> rooms,
+            @RequestParam String roomTypeId
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(roomService.createAll(rooms, roomTypeId));
     }
 
     // ✅ Get by ID
@@ -64,10 +77,31 @@ public class RoomController {
 
     // ✅ Get by room type
     @GetMapping("/room-type/{roomTypeId}")
-    public ResponseEntity<List<Room>> getRoomsByRoomType(
-            @PathVariable Long roomTypeId
+    public ResponseEntity<List<RoomDetailsDTO>> getRoomsByRoomType(
+            @PathVariable String roomTypeId
     ) {
-        return ResponseEntity.ok(roomService.getByRoomType(roomTypeId));
+        return ResponseEntity.ok(
+            roomService.getByRoomType(roomTypeId)
+                .stream()
+                .map(room -> new RoomDetailsDTO(
+                    room.getId(),
+                    room.getRoomNumber(),
+                    room.getStatus(),
+                    room.getRoomType().getPricePerNight()
+                ))
+                .collect(Collectors.toList())
+        );
+    }
+    @GetMapping("/by-number/{roomNumber}")
+    public ResponseEntity<RoomDetailsDTO> getRoomByNumber(@PathVariable String roomNumber) {
+        Room room = roomRepository.findByRoomNumber(roomNumber)
+                .orElseThrow(() -> new RuntimeException("Room not found: " + roomNumber));
+        return ResponseEntity.ok(new RoomDetailsDTO(
+            room.getId(),
+            room.getRoomNumber(),
+            room.getStatus(),
+            room.getRoomType().getPricePerNight()
+        ));
     }
 
     // ✅ Update status

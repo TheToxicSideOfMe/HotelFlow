@@ -1,237 +1,67 @@
-# HOTEL KNOWLEDGE BASE — AZURE GRAND HOTEL
+# Azure Grand Hotel — Knowledge Base
 
----
+## Hotel Info
+Name: Azure Grand Hotel
+Address: 14 Boulevard de la Corniche, Tunis, Tunisia
+Phone: +216 71 000 000 | Email: contact@azuregrand.tn
+Rating: 4-star | Languages: Arabic, French, English
 
-## GENERAL INFORMATION
+## Check-in / Check-out
+- Check-in: 2:00 PM | Check-out: 12:00 PM
+- Early check-in: +30 TND (subject to availability)
+- Late check-out (until 3 PM): +40 TND | After 3 PM: full night charged
+- Minimum age: 18 years with valid ID
 
-Hotel Name: Azure Grand Hotel
-Location: 14 Boulevard de la Corniche, Tunis, Tunisia
-Phone: +216 71 000 000
-Email: contact@azuregrand.tn
-Website: www.azuregrand.tn
-Star Rating: 4-star hotel
-Languages spoken at reception: Arabic, French, English
+## Room Types
+All rooms include: free Wi-Fi, AC, flat-screen TV, minibar, safe, hair dryer, toiletries, daily housekeeping, 24h room service.
 
-The Azure Grand Hotel is a modern 4-star hotel located on the scenic Corniche Boulevard in Tunis, just minutes from the city center and a short drive from Carthage-Tunis International Airport. The hotel combines contemporary design with traditional Tunisian hospitality, offering guests a comfortable and elegant experience whether they are visiting for business or leisure.
+| Room Type    | Size  | Bed              | Occupancy          | Price            |
+|--------------|-------|------------------|--------------------|------------------|
+| Single Room  | 22sqm | 1 Queen          | 1 adult            | 180 TND/night    |
+| Double Room  | 30sqm | 1 King / 2 Twin  | 2 adults           | 260–300 TND/night|
+| Deluxe Room  | 38sqm | 1 King           | 2 adults + 1 child | 380 TND/night    |
+| Junior Suite | 55sqm | 1 King           | 2 adults           | 520 TND/night    |
+| Family Room  | 48sqm | 1 King + 2 Twin  | 2 adults + 2 child | 430 TND/night    |
 
----
+- Single Room: city/courtyard view, work desk, en-suite shower
+- Double Room: city or sea view, seating area, bathtub and shower
+- Deluxe Room: guaranteed sea view, balcony, rain shower, soaking tub, Nespresso, welcome basket
+- Junior Suite: sea view, separate living area, walk-in closet, butler on request, furnished balcony, breakfast and airport transfer included
+- Family Room: city/garden view, kitchenette, children's amenity kit, connecting room available on request
 
-## CHECK-IN AND CHECK-OUT
+## Dining
+**Le Jasmin Restaurant** — Tunisian & Mediterranean cuisine
+- Breakfast: 7:00–10:30 AM | Lunch: 12:30–3:00 PM | Dinner: 7:00–10:30 PM
 
-Check-in time: 2:00 PM
-Check-out time: 12:00 PM (noon)
-Early check-in: Available upon request, subject to availability. May incur an additional charge of 30 TND.
-Late check-out: Available upon request until 3:00 PM for an additional fee of 40 TND. After 3:00 PM, a full night is charged.
-Minimum check-in age: 18 years old with a valid ID or passport.
+**Ciel Bleu Rooftop Bar** — cocktails, tapas, panoramic views
+- 5:00 PM–midnight (closed Mondays)
 
----
+**Room Service** — 24h (full menu until 11 PM, limited after)
 
-## ROOM TYPES
+**Breakfast add-on:** 25 TND continental / 40 TND full buffet (included in Junior Suite)
 
-### Single Room
-- Size: 22 sqm
-- Bed: 1 Queen bed
-- Occupancy: 1 adult
-- View: City view or courtyard view
-- Price: 180 TND per night
-- Description: A cozy and well-appointed room perfect for solo travelers. Features a work desk, flat-screen TV, air conditioning, minibar, and an en-suite bathroom with a shower.
+## Facilities
+- Outdoor pool: May–October, 8 AM–9 PM
+- Indoor heated pool: year-round, 7 AM–10 PM
+- Fitness center: 24h
+- Spa & hammam: 9 AM–8 PM daily
+- Business center & meeting rooms (10–80 people)
+- Free parking | Luggage storage | Concierge | Laundry service
 
-### Double Room
-- Size: 30 sqm
-- Bed: 1 King bed or 2 Twin beds (upon request)
-- Occupancy: 2 adults
-- View: City view or sea view
-- Price: 260 TND per night (city view), 300 TND per night (sea view)
-- Description: A spacious and comfortable room ideal for couples or business travelers. Includes a seating area, flat-screen TV, air conditioning, minibar, safe, and an en-suite bathroom with bathtub and shower.
+## Transport
+- City center: 3 km | Airport: 12 km | Medina: 4 km | Sidi Bou Said: 15 km
+- Airport shuttle: 60 TND one-way / 100 TND round-trip (book 24h in advance)
+- Nearest metro: Corniche Station (5-min walk)
 
-### Deluxe Room
-- Size: 38 sqm
-- Bed: 1 King bed
-- Occupancy: 2 adults + 1 child
-- View: Sea view (guaranteed)
-- Price: 380 TND per night
-- Description: An upgraded room offering premium furnishings, a larger bathroom with a rain shower and soaking tub, a Nespresso machine, complimentary welcome fruit basket, and a private balcony with panoramic sea views.
+## Policies
+**Cancellation:** Free if >48h before check-in. Within 48h: 1 night charged. No-show: full amount.
+**Pets:** Not allowed (certified guide dogs excepted)
+**Smoking:** Non-smoking property. Outdoor area near garden. Violation fee: 300 TND
+**Payment:** Cash (TND), Visa, Mastercard, bank transfer. 200 TND security deposit at check-in.
 
-### Junior Suite
-- Size: 55 sqm
-- Bed: 1 King bed
-- Occupancy: 2 adults
-- View: Sea view
-- Price: 520 TND per night
-- Description: A luxurious suite with a separate living area, walk-in closet, premium toiletries, pillow menu, butler service on request, and a large furnished balcony. Complimentary airport transfer included.
-
-### Family Room
-- Size: 48 sqm
-- Bed: 1 King bed + 2 Twin beds
-- Occupancy: 2 adults + 2 children
-- View: City view or garden view
-- Price: 430 TND per night
-- Description: Designed for families, this room offers ample space, a dedicated children's amenity kit, a small kitchenette with a microwave and mini-fridge, and connecting room option available on request.
-
----
-
-## AMENITIES
-
-### In All Rooms
-- Free high-speed Wi-Fi
-- Air conditioning and heating
-- Flat-screen satellite TV
-- Minibar (restocked daily)
-- In-room safe
-- Hair dryer
-- Complimentary toiletries
-- Daily housekeeping
-- 24-hour room service
-
-### Hotel Facilities
-- Outdoor swimming pool (open May to October, 8:00 AM – 9:00 PM)
-- Indoor heated pool (open year-round, 7:00 AM – 10:00 PM)
-- Fitness center (open 24 hours, access card required)
-- Spa and wellness center (massages, hammam, facials — open 9:00 AM to 8:00 PM)
-- Restaurant "Le Jasmin" — serves Tunisian and Mediterranean cuisine (open for breakfast, lunch, and dinner)
-- Rooftop bar "Ciel Bleu" — cocktails and light bites with panoramic views (open 5:00 PM to midnight)
-- Business center with meeting rooms (capacity: 10 to 80 people)
-- Concierge desk
-- 24-hour front desk
-- Luggage storage
-- Laundry and dry-cleaning service
-- Parking (on-site, free for hotel guests)
-- Airport shuttle service (on request, fee applies)
-
----
-
-## RESTAURANT AND DINING
-
-### Le Jasmin Restaurant
-- Breakfast: 7:00 AM – 10:30 AM (buffet, included in some packages)
-- Lunch: 12:30 PM – 3:00 PM
-- Dinner: 7:00 PM – 10:30 PM
-- Cuisine: Traditional Tunisian dishes, Mediterranean specialties, international options
-- Dress code: Smart casual
-
-### Ciel Bleu Rooftop Bar
-- Hours: 5:00 PM – midnight (closed on Mondays)
-- Offers: Cocktails, mocktails, wine, Tunisian craft beers, tapas and light snacks
-- Reservations recommended on weekends
-
-### Room Service
-- Available 24 hours
-- Full menu available until 11:00 PM, limited menu after 11:00 PM
-- Delivery time: approximately 30 minutes
-
-### Breakfast
-- Continental breakfast: 25 TND per person
-- Full buffet breakfast: 40 TND per person
-- Breakfast is included in Junior Suite bookings
-
----
-
-## CANCELLATION POLICY
-
-- Free cancellation up to 48 hours before the check-in date.
-- Cancellations made within 48 hours of check-in will be charged 1 night's stay.
-- No-show: Full booking amount will be charged.
-- Early departure: 1 night penalty applies.
-- Group bookings (5+ rooms): Separate cancellation policy applies — contact the hotel directly.
-
----
-
-## PAYMENT AND PRICING
-
-- Accepted payment methods: Cash (TND), Visa, Mastercard, bank transfer
-- A credit card is required at check-in as a security deposit (200 TND hold, released at check-out)
-- Prices are per room per night and include VAT
-- Breakfast is not included unless specified in the booking package
-- Special rates available for corporate clients and long stays (7+ nights)
-
----
-
-## PET POLICY
-
-- Pets are not allowed in the hotel, with the exception of certified guide dogs.
-
----
-
-## SMOKING POLICY
-
-- The Azure Grand Hotel is a non-smoking property.
-- Smoking is strictly prohibited in all rooms and indoor areas.
-- A designated outdoor smoking area is available near the garden entrance.
-- A cleaning fee of 300 TND will be charged if smoking is detected in a room.
-
----
-
-## ACCESSIBILITY
-
-- The hotel is fully wheelchair accessible.
-- Accessible rooms are available on request (ground floor, roll-in shower, grab bars).
-- Elevator access to all floors.
-- Accessible parking spaces available near the main entrance.
-
----
-
-## LOCATION AND TRANSPORT
-
-- Distance from Tunis city center: 3 km (approximately 10 minutes by car)
-- Distance from Carthage-Tunis International Airport: 12 km (approximately 20 minutes by car)
-- Distance from the Medina of Tunis (UNESCO World Heritage Site): 4 km
-- Distance from Sidi Bou Said: 15 km
-- Nearest metro station: Corniche Station (5-minute walk)
-- Taxi service: Available at the hotel entrance 24/7
-- Airport shuttle: Available on request — 60 TND one way, 100 TND round trip (must be booked 24 hours in advance)
-
----
-
-## FREQUENTLY ASKED QUESTIONS
-
-**Q: Is Wi-Fi free?**
-A: Yes, high-speed Wi-Fi is complimentary in all rooms and common areas.
-
-**Q: Is parking available?**
-A: Yes, the hotel offers free on-site parking for all guests.
-
-**Q: Can I request a specific floor or room?**
-A: Special requests can be noted at the time of booking and the hotel will do its best to accommodate them, but they cannot be guaranteed.
-
-**Q: Do you offer airport transfers?**
-A: Yes, airport transfers can be arranged through the concierge. The fee is 60 TND one way or 100 TND round trip. Booking must be made at least 24 hours in advance.
-
-**Q: Is breakfast included?**
-A: Breakfast is included in the Junior Suite rate and some promotional packages. For all other room types, breakfast can be added for 25 TND (continental) or 40 TND (full buffet) per person.
-
-**Q: Do you have a pool?**
-A: Yes, the hotel has both an outdoor pool (open May to October) and an indoor heated pool (open year-round).
-
-**Q: Can I store luggage after check-out?**
-A: Yes, complimentary luggage storage is available at the front desk.
-
-**Q: Are children welcome?**
-A: Yes, children of all ages are welcome. Children under 6 stay free when using existing bedding. A baby cot can be provided on request at no charge.
-
-**Q: Is the hotel suitable for business travelers?**
-A: Yes, the hotel has a fully equipped business center, high-speed Wi-Fi, and meeting rooms for groups of 10 to 80 people. Corporate rates are available.
-
-**Q: What is the currency used?**
-A: The hotel accepts Tunisian Dinar (TND), Visa, and Mastercard. Prices are listed in TND and include VAT.
-
-**Q: Do you have a spa?**
-A: Yes, the hotel has a full spa and wellness center offering massages, hammam, and facial treatments. Open daily from 9:00 AM to 8:00 PM. Advance booking is recommended.
-
-**Q: Is the hotel close to tourist attractions?**
-A: Yes. The Medina of Tunis is 4 km away, Sidi Bou Said is 15 km, and Carthage ruins are approximately 10 km from the hotel. The concierge can help arrange tours and excursions.
-
-**Q: What is the check-in age requirement?**
-A: Guests must be at least 18 years old with a valid ID or passport to check in.
-
-**Q: Can I modify my booking?**
-A: Yes, bookings can be modified subject to availability. Please contact the hotel or use the booking portal. Changes within 48 hours of check-in may be subject to fees.
-
----
-
-## LOYALTY AND SPECIAL OFFERS
-
-- Azure Rewards Program: Earn points on every stay, redeemable for free nights, spa treatments, and dining credits.
-- Long stay discount: 10% off for stays of 7 nights or more.
-- Early bird discount: 15% off when booking at least 30 days in advance.
-- Honeymoon package: Includes sea-view room upgrade, bottle of sparkling wine, and couples massage. Must be requested at booking.
-- Corporate accounts: Special negotiated rates for companies with frequent travel needs. Contact sales@azuregrand.tn.
+## Special Offers
+- 7+ nights: 10% discount
+- Book 30+ days ahead: 15% discount
+- Honeymoon package: sea-view upgrade + sparkling wine + couples massage
+- Corporate rates: contact sales@azuregrand.tn
+- Azure Rewards: points redeemable for free nights, spa, dining

@@ -5,11 +5,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.hotelflow.booking_service.client.RoomClient;
 import com.hotelflow.booking_service.dtos.RoomDetailsDTO;
+import com.hotelflow.booking_service.dtos.RoomTypeDTO;
 import com.hotelflow.booking_service.dtos.RoomDetailsDTO.RoomStatus;
 import com.hotelflow.booking_service.models.Booking;
 import com.hotelflow.booking_service.models.Booking.BookingStatus;
@@ -85,6 +87,26 @@ public class BookingService {
     public List<Booking> getByRoomId(String roomId) {
         return bookingRepository.findByRoomId(roomId);
     }
+public List<RoomDetailsDTO> findAvailableRoomsByType(String roomTypeId, LocalDate checkIn, LocalDate checkOut) {
+    if (!checkOut.isAfter(checkIn)) {
+        throw new RuntimeException("Check-out must be after check-in");
+    }
+
+    List<String> bookedRoomIds = bookingRepository.findBookedRoomIds(checkIn, checkOut);
+    List<RoomDetailsDTO> allRooms = roomClient.getRoomsByType(roomTypeId);
+
+    System.out.println("DEBUG roomTypeId: " + roomTypeId);
+    System.out.println("DEBUG allRooms: " + allRooms);
+    System.out.println("DEBUG bookedRoomIds: " + bookedRoomIds);
+
+    List<RoomDetailsDTO> available = allRooms.stream()
+            .filter(r -> r.getStatus() == RoomDetailsDTO.RoomStatus.AVAILABLE)
+            .filter(r -> !bookedRoomIds.contains(r.getId()))
+            .collect(Collectors.toList());
+
+    System.out.println("DEBUG available: " + available);
+    return available;
+}
 
     // ─── Status Updates ───────────────────────────────────────────────────────
 
@@ -152,4 +174,62 @@ public class BookingService {
     public void delete(String id) {
         bookingRepository.deleteById(id);
     }
+
+    public Booking createBookingByRoomTypeName(
+    String customerId,
+    String roomTypeName,
+    LocalDate checkIn,
+    LocalDate checkOut,
+    String notes
+) {
+    if (!checkOut.isAfter(checkIn)) {
+        throw new RuntimeException("Check-out must be after check-in");
+    }
+
+    // Ask room service for the roomTypeId by name
+    RoomTypeDTO roomType = roomClient.getRoomTypeByName(roomTypeName);
+
+    List<RoomDetailsDTO> allRooms = roomClient.getRoomsByType(roomType.getId());
+    List<String> bookedRoomIds = bookingRepository.findBookedRoomIds(checkIn, checkOut);
+
+    RoomDetailsDTO room = allRooms.stream()
+        .filter(r -> r.getStatus() == RoomDetailsDTO.RoomStatus.AVAILABLE)
+        .filter(r -> !bookedRoomIds.contains(r.getId()))
+        .findFirst()
+        .orElseThrow(() -> new RuntimeException("No available rooms for type: " + roomTypeName));
+
+    long nights = ChronoUnit.DAYS.between(checkIn, checkOut);
+    BigDecimal totalPrice = room.getPricePerNight().multiply(BigDecimal.valueOf(nights));
+
+    Booking booking = new Booking();
+    booking.setRoomId(room.getId());
+    booking.setCustomerId(customerId);
+    booking.setCheckIn(checkIn);
+    booking.setCheckOut(checkOut);
+    booking.setStatus(BookingStatus.PENDING);
+    booking.setTotalPrice(totalPrice);
+    booking.setNotes(notes);
+    booking.setCreatedAt(LocalDateTime.now());
+    booking.setUpdatedAt(LocalDateTime.now());
+
+    return bookingRepository.save(booking);
+}
+
+public List<RoomDetailsDTO> findAvailableRoomsByName(String roomTypeName, LocalDate checkIn, LocalDate checkOut) {
+    if (!checkOut.isAfter(checkIn)) {
+        throw new RuntimeException("Check-out must be after check-in");
+    }
+
+    // Ask room service for the roomTypeId by name
+    RoomTypeDTO roomType = roomClient.getRoomTypeByName(roomTypeName);
+
+    List<String> bookedRoomIds = bookingRepository.findBookedRoomIds(checkIn, checkOut);
+    List<RoomDetailsDTO> allRooms = roomClient.getRoomsByType(roomType.getId());
+
+    return allRooms.stream()
+            .filter(r -> r.getStatus() == RoomDetailsDTO.RoomStatus.AVAILABLE)
+            .filter(r -> !bookedRoomIds.contains(r.getId()))
+            .collect(Collectors.toList());
+}
+    
 }

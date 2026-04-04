@@ -28,6 +28,15 @@ public class RoomService {
         room.setCreatedAt(LocalDateTime.now());
         return roomRepository.save(room);
     }
+    public List<Room> createAll(List<Room> rooms, String roomTypeId) {
+        RoomType roomType = roomTypeRepository.findById(roomTypeId)
+                .orElseThrow(() -> new RuntimeException("RoomType not found"));
+        rooms.forEach(room -> {
+            room.setRoomType(roomType);
+            room.setCreatedAt(LocalDateTime.now());
+        });
+        return roomRepository.saveAll(rooms);
+    }
 
     public Room getById(String id) {
         return roomRepository.findById(id)
@@ -42,7 +51,7 @@ public class RoomService {
         return roomRepository.findByStatus(status);
     }
 
-    public List<Room> getByRoomType(Long roomTypeId) {
+    public List<Room> getByRoomType(String roomTypeId) {
         return roomRepository.findByRoomTypeId(roomTypeId);
     }
 

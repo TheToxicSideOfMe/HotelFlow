@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import com.hotelflow.room_service.models.RoomType;
+import com.hotelflow.room_service.repositories.RoomTypeRepository;
 import com.hotelflow.room_service.services.RoomTypeService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class RoomTypeController {
 
     private final RoomTypeService roomTypeService;
+    private final RoomTypeRepository roomTypeRepository;
 
     // ✅ Create room type
     @PostMapping
@@ -68,4 +70,11 @@ public class RoomTypeController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/by-name/{name}")
+    public ResponseEntity<RoomType> getByName(@PathVariable String name) {
+        return ResponseEntity.ok(
+            roomTypeRepository.findByNameIgnoreCase(name)
+                .orElseThrow(() -> new RuntimeException("Room type not found: " + name))
+        );
+    }
 }

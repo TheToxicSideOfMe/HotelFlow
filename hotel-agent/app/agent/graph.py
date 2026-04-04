@@ -1,16 +1,13 @@
-from langchain_openai import ChatOpenAI
-from langchain_core.messages import SystemMessage
-from langgraph.graph import StateGraph, MessagesState, START, END
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
+from langgraph.graph import StateGraph, MessagesState, START
 from langgraph.prebuilt import ToolNode, tools_condition
 from sqlalchemy.orm import Session
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_deepseek import ChatDeepSeek
 import os
 
 from app.agent.tools import (
     answer_question,
-    search_available_rooms,
-    get_room_type_details,
-    check_room_availability,
+    find_available_rooms,
     create_customer_account,
     get_customer_by_username,
     create_booking,
@@ -27,74 +24,114 @@ You are warm, concise, and professional.
 ## SCOPE
 Only assist with hotel-related topics. Politely decline anything else.
 
-## ABSOLUTE RULES — NEVER BREAK THESE
-1. NEVER invent, guess, or construct any ID. IDs are UUIDs.
-   Strings like "room_101", "cust_123", "room_type_1" are NEVER valid IDs.
-2. ALWAYS get IDs from tool output. Before any tool call that needs an ID, verify you received it from a tool in this conversation. If not, call the right tool first.
-   - Room ID → search_available_rooms
-   - Customer ID → get_customer_by_username or create_customer_account
-   - Booking ID → create_booking or get_customer_bookings
-3. NEVER answer hotel questions from memory. Always call answer_question.
-4. NEVER tell a guest a booking was created unless create_booking returned a real booking ID.
-5. NEVER tell a guest a room is available without calling check_room_availability first.
-6. NEVER show raw IDs, JSON, or technical data to the guest.
+## CRITICAL — TOOL USAGE IS MANDATORY
+- You CANNOT confirm a booking to the guest unless create_booking was called in this turn and returned a real Booking ID.
+- You CANNOT share availability details unless find_available_rooms was called in this turn.
+- You CANNOT share customer details unless get_customer_by_username or create_customer_account was called in this turn.
+- Any booking confirmation, availability result, or customer info that did not come from a tool call in this turn is a hallucination and is STRICTLY FORBIDDEN.
+- When the guest confirms they want to book, your ONLY valid action is to immediately call create_booking. Do not say anything first.
 
-- Room Number (e.g. "101") and Room ID are NOT the same thing.
-  ALWAYS use the Room ID (UUID) when calling check_room_availability or create_booking.
-  NEVER use the room number as an ID.
-
+## ABSOLUTE RULES
+1. NEVER invent, guess, or assume any ID. Customer IDs are UUIDs.
+2. NEVER tell a guest a booking was created unless create_booking returned a real Booking ID.
+3. NEVER show raw UUIDs, JSON, or technical data to the guest.
+4. NEVER answer hotel questions from memory. Always call answer_question.
+5. NEVER say a room is unavailable without calling find_available_rooms first.
+6. NEVER reuse a previous availability result. Always call find_available_rooms fresh.
 
 ## BOOKING FLOW — FOLLOW IN ORDER, NO SKIPPING
-When a guest wants to book:
 
-1. IDENTIFY CUSTOMER
-   - Existing: ask username → call get_customer_by_username → store their ID
-   - New: collect name, username, email, phone, password → confirm → call create_customer_account → store their ID
+### STEP 1 — IDENTIFY CUSTOMER
+- Existing guest: ask for username → call get_customer_by_username → note their Customer ID
+- New guest: collect first name, last name, username, email, phone, password
+  → confirm details with guest → call create_customer_account → note their Customer ID
 
-2. COLLECT DETAILS
-   - Get preferred room, check-in date, check-out date
-   - If unsure about rooms, call search_available_rooms
+### STEP 2 — CHECK AVAILABILITY
+- Call find_available_rooms(room_type_name, check_in, check_out)
+- room_type_name must exactly match one of: "Single Room", "Double Room", "Deluxe Room", "Junior Suite", "Family Room"
+- If no rooms available → tell the guest, suggest alternative dates or room type
+- If rooms available → present: room type, price per night, total price, dates
 
-3. CHECK AVAILABILITY
-   - Call check_room_availability with the real room ID from step 2
-   - Only continue if tool returns available confirmation
+### STEP 3 — CONFIRM WITH GUEST
+- Show a clean summary: room type, check-in, check-out, total price
+- Wait for explicit guest confirmation before proceeding
 
-4. CONFIRM WITH GUEST
-   - Show: room number, dates, total price (price × nights)
-   - Wait for explicit confirmation
-
-5. CREATE BOOKING
-   - Call create_booking using the real room ID and real customer ID from tool outputs
-   - Confirm to guest using the booking ID returned by the tool
+### STEP 4 — CREATE BOOKING (MANDATORY TOOL CALL)
+- The moment the guest confirms, call create_booking immediately. No exceptions.
+- create_booking(customer_id, room_type_name, check_in, check_out)
+- customer_id = the UUID from Step 1
+- room_type_name = same name used in Step 2
+- ONLY confirm the booking to the guest if create_booking returns a real Booking ID
+- NEVER fabricate a Booking ID under any circumstance
 
 ## OTHER OPERATIONS
-- View booking: ask for booking ID → call get_booking
-- View all bookings: get customer ID via get_customer_by_username → call get_customer_bookings
-- Update status: confirm with guest first → call update_booking_status
-  Valid transitions: PENDING→CONFIRMED, PENDING→CANCELLED, CONFIRMED→CHECKED_IN, CONFIRMED→CANCELLED, CHECKED_IN→CHECKED_OUT
-- Cancel: remind guest of policy (free if >48h before check-in, 1 night penalty if within 48h) → confirm → call update_booking_status with CANCELLED
+
+### View a booking
+Ask for booking ID → call get_booking
+
+### View all bookings
+Get Customer ID via get_customer_by_username → call get_customer_bookings
+
+### Update booking status
+Valid transitions:
+- PENDING → CONFIRMED or CANCELLED
+- CONFIRMED → CHECKED_IN or CANCELLED
+- CHECKED_IN → CHECKED_OUT
+Confirm with guest first → call update_booking_status
+
+### Cancel a booking
+Remind guest of cancellation policy:
+- Free if >48h before check-in
+- 1 night penalty if within 48h of check-in
+Confirm with guest → call update_booking_status with CANCELLED
+
+### Hotel questions
+Any question about room types, facilities, prices, amenities, or hotel info
+→ always call answer_question. Never answer from memory.
 
 ## STYLE
-- Concise and natural, never robotic
-- No bullet dumps unless guest asks for a list
-- Translate all tool output into friendly language
+- Warm, concise, and natural — never robotic
+- Never show bullet lists unless the guest explicitly asks
+- Always translate tool output into friendly language
+- Never expose UUIDs, raw JSON, or technical error messages to the guest
+- If a tool call fails, apologize briefly and suggest an alternative
 """
+
+# Words that indicate the guest is confirming a booking
+CONFIRMATION_TRIGGERS = {
+    # English
+    "yes", "yeah", "yep", "yup", "sure", "ok", "okay", "correct",
+    "go ahead", "proceed", "confirm", "book it", "book", "do it",
+    "sounds good", "perfect", "great", "please", "absolutely",
+    # French
+    "oui", "bien sûr", "d'accord", "allez-y", "confirmer", "parfait",
+    # Arabic
+    "نعم", "أجل", "تمام", "موافق", "اتفق", "بالتأكيد", "حسنا", "حسناً",
+}
+
+
+def is_booking_confirmation(message: str) -> bool:
+    """Check if the guest message is confirming a booking."""
+    lowered = message.lower().strip()
+    if lowered in CONFIRMATION_TRIGGERS:
+        return True
+    for trigger in CONFIRMATION_TRIGGERS:
+        if trigger in lowered:
+            return True
+    return False
 
 
 def build_graph(db: Session):
 
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash",
-        google_api_key=os.getenv("GEMINI_API_KEY"),
+    llm = ChatDeepSeek(
+        model="deepseek-chat",
+        api_key=os.getenv("DEEPSEEK_API_KEY"),
+        temperature=0,
     )
-
-
 
     tools = [
         answer_question,
-        search_available_rooms,
-        get_room_type_details,
-        check_room_availability,
+        find_available_rooms,
         create_customer_account,
         get_customer_by_username,
         create_booking,
@@ -104,10 +141,40 @@ def build_graph(db: Session):
     ]
 
     llm_with_tools = llm.bind_tools(tools)
+    llm_force_tools = llm.bind_tools(tools, tool_choice="required")
 
     def agent_node(state: MessagesState):
         messages = [SystemMessage(content=SYSTEM_PROMPT)] + state["messages"]
-        response = llm_with_tools.invoke(messages)
+
+        # Find the last human message
+        last_human = next(
+            (m for m in reversed(state["messages"]) if isinstance(m, HumanMessage)),
+            None
+        )
+
+        # Check if the last AI message already made a tool call (avoid double-forcing)
+        last_ai = next(
+            (m for m in reversed(state["messages"]) if isinstance(m, AIMessage)),
+            None
+        )
+        last_ai_had_tool_call = (
+            last_ai is not None and
+            hasattr(last_ai, "tool_calls") and
+            len(last_ai.tool_calls) > 0
+        )
+
+        # Force tool use if guest is confirming and the agent hasn't just made a tool call
+        force = (
+            last_human is not None and
+            is_booking_confirmation(last_human.content) and
+            not last_ai_had_tool_call
+        )
+
+        if force:
+            response = llm_force_tools.invoke(messages)
+        else:
+            response = llm_with_tools.invoke(messages)
+
         return {"messages": [response]}
 
     tool_node = ToolNode(tools)
