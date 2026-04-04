@@ -109,10 +109,9 @@ The knowledge base (hotel info, room types, policies, pricing) is embedded using
 
 ## Screenshots
 
+<img width="737" height="816" alt="Screenshot_20260404_162618" src="https://github.com/user-attachments/assets/2dc3bd74-1e6b-4c2e-a5bb-d1af4ce720bc" />
 <img width="713" height="692" alt="Screenshot_20260404_163024" src="https://github.com/user-attachments/assets/d22dec25-12aa-480e-b86a-d31c73a66f82" />
 <img width="727" height="679" alt="Screenshot_20260404_162719" src="https://github.com/user-attachments/assets/53d13cc1-b4c8-4a3a-83a9-1b01971c4f71" />
-<img width="737" height="816" alt="Screenshot_20260404_162618" src="https://github.com/user-attachments/assets/2dc3bd74-1e6b-4c2e-a5bb-d1af4ce720bc" />
-
 
 ---
 
